@@ -1,7 +1,6 @@
 // App.jsx
 const { useState } = React;
 
-// Reutilizamos tu función de cálculo
 function realizarOperacion(num1, num2, operacion) {
   const n1 = parseFloat(num1);
   const n2 = parseFloat(num2);
