@@ -1,65 +1,60 @@
 const { useState } = React;
 
 function App() {
+  const [estatura, setEstatura] = useState("");
   const [peso, setPeso] = useState("");
-  const [altura, setAltura] = useState("");
-  const [mensaje, setMensaje] = useState(null);
+  const [resultado, setResultado] = useState("");
+  const [colorResultado, setColorResultado] = useState("");
 
-  const calcularIMC = e => {
+  function handleSubmit(e) {
     e.preventDefault();
-    const p = parseFloat(peso);
-    const h = parseFloat(altura);
-    if (isNaN(p) || isNaN(h) || h <= 0) {
-      setMensaje({ texto: "Peso o altura inválidos", color: "#ccc" });
-      return;
+
+    const estatura_num = Number(estatura);
+    const peso_num = Number(peso);
+    let imc = (peso_num / (estatura_num * estatura_num)).toFixed(1);
+
+    let mensaje = `Su IMC es de ${imc} | `;
+    let color = "";
+
+    if (imc < 18.5) {
+      mensaje += "Nivel bajo.";
+      color = "goldenrod";
+    } else if (imc <= 24.9) {
+      mensaje += "Nivel Normal.";
+      color = "green";
+    } else if (imc <= 29.9) {
+      mensaje += "Nivel de sobrepeso.";
+      color = "orange";
+    } else {
+      mensaje += "Nivel de obesidad.";
+      color = "red";
     }
-    const imc = p / (h * h);
-    const nivel = imc < 18.5
-      ? "Bajo peso"
-      : imc < 25
-      ? "Normal"
-      : imc < 30
-      ? "Sobrepeso"
-      : "Obesidad";
-    const color = imc < 18.5
-      ? "yellow"
-      : imc < 25
-      ? "green"
-      : imc < 30
-      ? "orange"
-      : "red";
-    setMensaje({ texto: `IMC: ${imc.toFixed(2)} – ${nivel}`, color });
-  };
+
+    setResultado(mensaje);
+    setColorResultado(color);
+  }
 
   return (
-    <div>
-      <h1>Calculadora de IMC</h1>
-      <form onSubmit={calcularIMC}>
-        <label>
-          Peso (kg):
-          <input
-            type="number"
-            step="0.1"
-            value={peso}
-            onChange={e => setPeso(e.target.value)}
-          />
-        </label>
-        <label>
-          Altura (m):
-          <input
-            type="number"
-            step="0.01"
-            value={altura}
-            onChange={e => setAltura(e.target.value)}
-          />
-        </label>
+    <>
+      <form onSubmit={handleSubmit}>
+        <InputN
+          id="inputEstatura"
+          text="Estatura (en metros)"
+          value={estatura}
+          onChange={e => setEstatura(e.target.value)}
+        />
+        <br />
+        <InputN
+          id="inputPeso"
+          text="Peso (en kilogramos)"
+          value={peso}
+          onChange={e => setPeso(e.target.value)}
+        />
+        <br /><br />
         <button type="submit">Calcular</button>
       </form>
-      {mensaje && (
-        <div style={{ backgroundColor: mensaje.color, padding: "0.5rem" }}>
-          {mensaje.texto}
-        </div>
-      )}
-    </div>
+      <br />
+      {resultado && <div style={{ color: colorResultado }}>{resultado}</div>}
+    </>
   );
 }
